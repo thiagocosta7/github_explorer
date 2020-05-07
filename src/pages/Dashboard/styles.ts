@@ -10,13 +10,6 @@ export const Title = styled.h1`
 	font-size: 36px;
 	line-height: 44px;
 	color: #3a3a3a;
-	max-width: 450px;
-
-	@media (min-width: 1024px) {
-		font-size: 48px;
-		line-height: 56px;
-		margin-top: 80px;
-	}
 `
 
 export const Form = styled.form<FormProps>`
@@ -24,8 +17,81 @@ export const Form = styled.form<FormProps>`
 	max-width: 700px;
 
 	display: flex;
+	flex-wrap: wrap;
 
-	input {
+	& > div {
+		flex-basis: 100%;
+		border: none;
+		display: flex;
+
+		label {
+			display: block;
+			position: relative;
+			padding-left: 35px;
+			margin-bottom: 12px;
+			cursor: pointer;
+			font-size: 22px;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			color: #3a3a3a;
+
+			& + label {
+				margin-left: 16px;
+			}
+
+			&:hover {
+				input {
+					& ~ span {
+						background-color: #e1e1e1;
+					}
+				}
+			}
+
+			input {
+				position: absolute;
+				opacity: 0;
+				cursor: pointer;
+				height: 0;
+				width: 0;
+			}
+
+			input:checked {
+				& ~ span {
+					background-color: #2196f3;
+					&:after {
+						display: block;
+					}
+				}
+			}
+
+			span {
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				left: 0;
+				height: 25px;
+				width: 25px;
+				background-color: #ffffff;
+				border-radius: 50%;
+				transition: 0.2s background-color;
+				&:after {
+					content: '';
+					position: absolute;
+					display: none;
+					top: 9px;
+					left: 9px;
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: white;
+				}
+			}
+		}
+	}
+
+	& > input {
 		flex: 1;
 		height: 50px;
 		padding: 0 16px;
@@ -51,8 +117,8 @@ export const Form = styled.form<FormProps>`
 	}
 
 	button {
-		width: 210px;
-		background: #04d361;
+		flex: 1;
+		background: #2196f3;
 		border: 0;
 		height: 50px;
 		color: #ffffff;
@@ -60,11 +126,13 @@ export const Form = styled.form<FormProps>`
 		border-radius: 0 5px 5px 0;
 		transition: 0.2s background-color;
 		&:hover {
-			background: ${shade(0.2, '#04d361')};
+			background: ${shade(0.2, '#2196f3')};
 		}
 
 		@media (min-width: 1024px) {
 			height: 70px;
+			flex: none;
+			width: 210px;
 		}
 	}
 `
@@ -106,6 +174,11 @@ export const Repositories = styled.div`
 			strong {
 				font-size: 20px;
 				color: #3d3d4d;
+
+				span {
+					font-size: 16px;
+					font-weight: normal;
+				}
 			}
 
 			p {

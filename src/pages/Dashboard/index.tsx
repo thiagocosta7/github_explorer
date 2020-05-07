@@ -1,98 +1,142 @@
-import React, { useEffect, useState, FormEvent } from 'react'
+import React, { useState, FormEvent } from 'react'
 import { FiChevronRight } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 
 import api from './../../services/api-client'
 
+import Loader from './../../components/Loader'
+
 import { Title, Form, Error, Repositories } from './styles'
 
-interface Repository {
-	full_name: string
-	description: string
+interface SearchResult {
+	id: number
+	type?: string
+	name?: string
+	full_name?: string
+	description?: string
+	login?: string
+	avatar_url?: string
 	owner: {
-		login: string
-		avatar_url: string
+		avatar_url?: string
+		login?: string
 	}
 }
 
 const Dashboard: React.FC = () => {
-	const [newRepo, setNewRepo] = useState('')
-	const [inputError, setInputError] = useState('')
-	const [repositories, setRepositories] = useState<Repository[]>(() => {
-		const storagedRepositories = localStorage.getItem(
-			'@GitHubExplorer:repositories'
-		)
-		if (storagedRepositories) {
-			return JSON.parse(storagedRepositories)
-		} else {
-			return []
-		}
+	const [searchType, setSearchType] = useState('repositories')
+	const [searchTerm, setSearchTerm] = useState('')
+	const [status, setStatus] = useState({
+		loading: false,
+		error: ''
 	})
-
-	useEffect(() => {
-		localStorage.setItem(
-			'@GitHubExplorer:repositories',
-			JSON.stringify(repositories)
-		)
-	}, [repositories])
+	const [results, setResults] = useState<SearchResult[]>([])
 
 	async function handleAddRepository(
 		event: FormEvent<HTMLFormElement>
 	): Promise<void> {
 		event.preventDefault()
 
-		if (!newRepo) {
-			setInputError(
-				'Enter the repository name in the following format: author/name '
-			)
+		if (!searchTerm) {
+			setStatus({
+				...status,
+				error: `You must type a ${
+					searchType === 'repositories' ? 'repository' : 'user'
+				} name to search`
+			})
 			return
 		}
 
-		try {
-			const response = await api.get<Repository>(`repos/${newRepo}`)
-			const repository = response.data
+		setStatus({ ...status, loading: true })
 
-			setRepositories([...repositories, repository])
-			setNewRepo('')
-			setInputError('')
+		try {
+			const response = await api.get(`search/${searchType}?q=${searchTerm}`)
+			const result = response.data.items
+
+			setResults(result)
+			setSearchTerm('')
+			setStatus({ loading: false, error: '' })
 		} catch (error) {
-			setInputError(`Error while searching for: ${newRepo}`)
+			setStatus({
+				loading: true,
+				error: `Error while searching for: ${searchTerm}`
+			})
 		}
 	}
 
 	return (
 		<>
-			<Title> Explore repositories on GitHub </Title>
+			<Title> Explore repositories or users on GitHub: </Title>
 
-			<Form hasError={!!inputError} onSubmit={handleAddRepository}>
+			<Form hasError={!!status.error} onSubmit={handleAddRepository}>
+				<div>
+					<label>
+						Repositories
+						<input
+							type="radio"
+							value="repositories"
+							id="repositories"
+							name="searchType"
+							checked={searchType === 'repositories'}
+							onChange={e => setSearchType(e.target.value)}
+						/>
+						<span></span>
+					</label>
+					<label>
+						Users
+						<input
+							type="radio"
+							value="users"
+							id="users"
+							name="searchType"
+							checked={searchType === 'users'}
+							onChange={e => setSearchType(e.target.value)}
+						/>
+						<span></span>
+					</label>
+				</div>
 				<input
-					value={newRepo}
-					placeholder="Search for repository name..."
-					onChange={e => setNewRepo(e.target.value)}
+					value={searchTerm}
+					placeholder={`Search for ${searchType.toLocaleLowerCase()}...`}
+					onChange={e => setSearchTerm(e.target.value)}
 				/>
 				<button type="submit"> Search </button>
 			</Form>
 
-			{inputError && <Error> {inputError} </Error>}
+			{status.error && <Error> {status.error} </Error>}
 
 			<Repositories>
-				{repositories.map(repository => (
-					<Link
-						to={`/repositories/${repository.full_name}`}
-						key={repository.full_name}
-					>
-						<img
-							src={repository.owner.avatar_url}
-							alt={repository.owner.login}
-						/>
-						<div>
-							<strong> {repository.full_name} </strong>
-							<p> {repository.description} </p>
-						</div>
+				{status.loading ? (
+					<Loader />
+				) : (
+					results.map(result => {
+						if (result.type === 'User') {
+							return (
+								<Link to={`/users/${result.login}`} key={result.id}>
+									<img src={result.avatar_url} alt={result.login} />
+									<div>
+										<strong> {result.login} </strong>
+									</div>
 
-						<FiChevronRight size={20} />
-					</Link>
-				))}
+									<FiChevronRight size={20} />
+								</Link>
+							)
+						} else {
+							return (
+								<Link to={`/repositories/${result.full_name}`} key={result.id}>
+									<div>
+										<strong>
+											{' '}
+											{result.name} <span> [{result.owner.login}] </span>
+										</strong>
+										<p> {result.description} </p>
+									</div>
+
+									<FiChevronRight size={20} />
+								</Link>
+							)
+						}
+					})
+				)}
 			</Repositories>
 		</>
 	)
