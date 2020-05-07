@@ -1,6 +1,7 @@
 {
   "name": "github-explorer",
-  "version": "0.1.0",
+	"version": "0.1.0",
+	"homepage": "http://thiagocosta7.github.io/github_explorer",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -10,6 +11,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "acorn": "^7.1.1",
     "axios": "^0.19.2",
     "polished": "^3.6.2",
     "react": "^16.13.1",
@@ -25,7 +27,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"predeploy": "yarn build",
+		"deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
