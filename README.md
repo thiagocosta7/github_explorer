@@ -3,7 +3,7 @@
 </div>
 
 ### GitHub Explorer: search for repositories on GitHub
-Application developed using [React](https://pt-br.reactjs.org/) and [Typescript](https://www.typescriptlang.org/) which allows to search for GitHub repositories and list their details and open issues.
+Application developed using [React](https://pt-br.reactjs.org/) and [Typescript](https://www.typescriptlang.org/) which allows to search for GitHub repositories, store it on `localStorage` and list their details and open issues.
 
 ### Running Locally
 

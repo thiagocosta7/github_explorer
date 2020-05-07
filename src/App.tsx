@@ -10,7 +10,7 @@ import Header from './components/Header'
 const App: React.FC = () => (
 	<>
 		<GlobalStyle />
-		<BrowserRouter>
+		<BrowserRouter basename={process.env.PUBLIC_URL}>
 			<Header />
 			<Routes />
 		</BrowserRouter>

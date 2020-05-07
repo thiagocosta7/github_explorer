@@ -8,7 +8,6 @@ import { Header } from './styles'
 
 const HeaderComponent: React.FC = () => {
 	const { pathname } = useLocation()
-
 	return (
 		<Header>
 			<img src={logo} alt="GitHub Explorer" />
