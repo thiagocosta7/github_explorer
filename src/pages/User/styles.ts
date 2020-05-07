@@ -28,18 +28,6 @@ export const RepositoryInfo = styled.section`
 				margin-top: 4px;
 				display: flex;
 				flex-direction: column;
-
-				a {
-					font-size: 18px;
-					text-decoration: none;
-					color: #737380;
-					display: flex;
-					align-items: center;
-
-					svg {
-						margin-right: 4px;
-					}
-				}
 			}
 		}
 

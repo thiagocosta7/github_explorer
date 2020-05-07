@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouteMatch } from 'react-router-dom'
-import { FiChevronRight, FiGlobe } from 'react-icons/fi'
+import { FiChevronRight } from 'react-icons/fi'
 
 import api from './../../services/api-client'
 
@@ -17,7 +17,6 @@ interface User {
 	login: string
 	avatar_url: string
 	location: string
-	blog: string
 	public_repos: number
 	followers: number
 	following: number
@@ -54,15 +53,7 @@ const User: React.FC = () => {
 						<strong>
 							{user.name} <span> {user.login} </span>
 						</strong>
-						<p>
-							{user.location}
-							{user.blog && (
-								<a href={user.blog} target="_blank" rel="noopener noreferrer">
-									<FiGlobe />
-									{user.blog}
-								</a>
-							)}
-						</p>
+						<p>{user.location}</p>
 					</div>
 				</header>
 				<ul>
