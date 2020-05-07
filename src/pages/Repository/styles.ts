@@ -16,6 +16,7 @@ export const RepositoryInfo = styled.section`
 		}
 
 		div {
+			flex: 1;
 			strong {
 				font-size: 26px;
 				color: #3d3d4d;
